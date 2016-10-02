@@ -50,7 +50,7 @@ bool DynamicWifi::configure() {
         Serial.println(body);
 
         if (protocol != "HTTP/1.1") {
-          error(client, 505); // HTTP Version Not Supported
+          status(client, 505); // HTTP Version Not Supported
           break;
         }
 
@@ -59,7 +59,7 @@ bool DynamicWifi::configure() {
         } else if (verb.equals("POST")) {
           handlePost(client, body);
         } else {
-          error(client, 405); // Method not allowed
+          status(client, 405); // Method not allowed
         }
         break;
       }
@@ -122,17 +122,16 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
   } while(i < body.length());
   client.print("HTTP/1.1 ");
   if (ssid.length() <= 0 || password.length() <= 0) {
-    client.print(400);
+    status(client, 400);
   } else {
-    client.print(200);
+    status(client, 200);
+    client.print("Network '");
+    client.print(ssid);
+    client.print("' saved!");
   }
-  client.print(" \r\n\r\n");
-  client.print("Network '");
-  client.print(ssid);
-  client.print("' saved!");
 }
 
-void DynamicWifi::error(WiFiClient client, short status) {
+void DynamicWifi::status(WiFiClient client, short status) {
   client.print("HTTP/1.1 ");
   client.print(status);
   client.print(" \r\n\r\n");

@@ -11,7 +11,7 @@ public:
 private:
   void handleGet(WiFiClient);
   void handlePost(WiFiClient, String);
-  void error(WiFiClient, short);
+  void status(WiFiClient, short);
   String ssid;
   String password;
   WiFiServer* server;
