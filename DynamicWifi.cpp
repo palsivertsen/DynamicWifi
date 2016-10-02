@@ -32,10 +32,11 @@ bool DynamicWifi::tryConfigure() {
         client.read();
         {
           String header;
+          debug_println("Headers:");
           do {
             header = client.readStringUntil('\r');
             client.read();
-            // Get headers here
+            debug_println(header);
           } while (header.length() > 0);
         }
         String body = client.readString();
@@ -51,6 +52,15 @@ bool DynamicWifi::tryConfigure() {
 
         if (protocol != "HTTP/1.1") {
           status(client, 505); // HTTP Version Not Supported
+          break;
+        }
+
+        // Only accept requests on root path
+        if (path != "/") {
+          status(client, 404);
+          debug_print("Path '");
+          debug_print(path);
+          debug_println("' not allowed'");
           break;
         }
 
