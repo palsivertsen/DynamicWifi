@@ -21,8 +21,6 @@ public:
   DynamicWifi(char*);
   ~DynamicWifi();
   bool tryConfigure();
-  String getSsid();
-  String getPassword();
 private:
   void handleGet(WiFiClient);
   void handlePost(WiFiClient, String);
