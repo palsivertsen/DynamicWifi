@@ -5,6 +5,17 @@ void generateUniqueSsid(char*);
 void setup() {
   // Setup
   Serial.begin(115200);
+  Serial.println("Booting...");
+
+  // Test if previous wifi is awailable
+  if (WiFi.waitForConnectResult() == WL_CONNECTED) {
+    Serial.printf("Connected to %s\n", WiFi.SSID().c_str());
+    return;
+  }
+
+  WiFi.setAutoConnect(true);
+  WiFi.setAutoReconnect(true);
+
   char uniqueSsid[15] = {'\0'};
   generateUniqueSsid(uniqueSsid);
 
@@ -20,11 +31,6 @@ void setup() {
       return;
     }
   }
-  // config was successfull
-  Serial.print("SSID: ");
-  Serial.println(config.getSsid());
-  Serial.print("Password: ");
-  Serial.println(config.getPassword());
 }
 
 void loop() {

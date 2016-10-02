@@ -78,7 +78,19 @@ bool DynamicWifi::tryConfigure() {
     client.stop();
     debug_println("\nClient disconnected");
   }
-  return ssid.length() > 0 && password.length() > 0;
+  //Connect to wifi
+  if (ssid.length() > 0 && password.length() > 0) {
+    char ssidC[ssid.length() + 1];
+    char passwordC[password.length() + 1];
+    ssidC[ssid.length() + 1] = '\0';
+    passwordC[password.length() + 1] = '\0';
+    ssid.toCharArray(ssidC, ssid.length() + 1);
+    ssid.toCharArray(passwordC, password.length() + 1);
+    WiFi.begin(ssidC, passwordC);
+    ssid = "";
+    password = "";
+  }
+  return WiFi.waitForConnectResult() == WL_CONNECTED;
 }
 
 void DynamicWifi::handleGet(WiFiClient client) {
@@ -145,12 +157,4 @@ void DynamicWifi::status(WiFiClient client, short status) {
   client.print("HTTP/1.1 ");
   client.print(status);
   client.print(" \r\n\r\n");
-}
-
-String DynamicWifi::getSsid() {
-  return ssid;
-}
-
-String DynamicWifi::getPassword() {
-  return password;
 }
