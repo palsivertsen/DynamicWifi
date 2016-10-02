@@ -5,7 +5,7 @@ class DynamicWifi {
 public:
   DynamicWifi(char*);
   ~DynamicWifi();
-  bool configure();
+  bool tryConfigure();
   String getSsid();
   String getPassword();
 private:

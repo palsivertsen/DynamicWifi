@@ -20,7 +20,7 @@ String httpProtocolNotSupported() {
   String response = String("HTTP/1.1 505");
 }
 
-bool DynamicWifi::configure() {
+bool DynamicWifi::tryConfigure() {
   WiFiClient client = server->available();
   if (client) {
     Serial.println("Client connected");
@@ -68,7 +68,7 @@ bool DynamicWifi::configure() {
     client.stop();
     Serial.println("\nClient disconnected");
   }
-  return false;
+  return ssid.length() > 0 && password.length() > 0;
 }
 
 void DynamicWifi::handleGet(WiFiClient client) {
