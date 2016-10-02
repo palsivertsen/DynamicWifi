@@ -3,17 +3,17 @@
 DynamicWifi::DynamicWifi(char* ssid)
     :server(new WiFiServer(80)) {
   WiFi.softAP(ssid);
-  Serial.println("Creating AP with ssid: ");
-  Serial.println(ssid);
-  Serial.print("Soft-AP IP address = ");
-  Serial.println(WiFi.softAPIP());
+  debug_println("Creating AP with ssid: ");
+  debug_println(ssid);
+  debug_print("Soft-AP IP address = ");
+  debug_println(WiFi.softAPIP());
   server->begin();
 }
 
 DynamicWifi::~DynamicWifi() {
   delete server;
   WiFi.softAPdisconnect(true);
-  Serial.println("Wifi off");
+  debug_println("Wifi off");
 }
 
 String httpProtocolNotSupported() {
@@ -23,7 +23,7 @@ String httpProtocolNotSupported() {
 bool DynamicWifi::tryConfigure() {
   WiFiClient client = server->available();
   if (client) {
-    Serial.println("Client connected");
+    debug_println("Client connected");
     while (client.connected()) {
       if (client.available()) {
         String verb = client.readStringUntil(' ');
@@ -40,14 +40,14 @@ bool DynamicWifi::tryConfigure() {
         }
         String body = client.readString();
 
-        Serial.print("Verb: ");
-        Serial.println(verb);
-        Serial.print("Path: ");
-        Serial.println(path);
-        Serial.print("Protocol: ");
-        Serial.println(protocol);
-        Serial.print("Body: ");
-        Serial.println(body);
+        debug_print("Verb: ");
+        debug_println(verb);
+        debug_print("Path: ");
+        debug_println(path);
+        debug_print("Protocol: ");
+        debug_println(protocol);
+        debug_print("Body: ");
+        debug_println(body);
 
         if (protocol != "HTTP/1.1") {
           status(client, 505); // HTTP Version Not Supported
@@ -66,7 +66,7 @@ bool DynamicWifi::tryConfigure() {
     }
     delay(1);
     client.stop();
-    Serial.println("\nClient disconnected");
+    debug_println("\nClient disconnected");
   }
   return ssid.length() > 0 && password.length() > 0;
 }
@@ -103,21 +103,21 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
     if (indexOfAmp > 0) {
       keyVal = body.substring(i, indexOfAmp);
       i = indexOfAmp + 1;
-      Serial.println("PreKey");
+      debug_println("PreKey");
     } else {
       keyVal = body.substring(i, body.length());
-      Serial.println("PostKey");
+      debug_println("PostKey");
       i = body.length();
     }
-    Serial.print("KeyVal: ");
-    Serial.println(keyVal);
+    debug_print("KeyVal: ");
+    debug_println(keyVal);
     if (keyVal.startsWith("ssid=")) {
       ssid = keyVal.substring(5, keyVal.length());
     } else if (keyVal.startsWith("password=")) {
       password = keyVal.substring(9, keyVal.length());
     } else {
-      Serial.print("Ignoring ");
-      Serial.println(keyVal);
+      debug_print("Ignoring ");
+      debug_println(keyVal);
     }
   } while(i < body.length());
   client.print("HTTP/1.1 ");
