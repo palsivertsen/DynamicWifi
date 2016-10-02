@@ -74,7 +74,7 @@ bool DynamicWifi::tryConfigure() {
         break;
       }
     }
-    delay(1);
+    client.flush();
     client.stop();
     debug_println("\nClient disconnected");
   }
