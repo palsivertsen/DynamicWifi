@@ -2,22 +2,19 @@
 
 DynamicWifi::DynamicWifi(char* ssid)
     :server(new WiFiServer(80)) {
+  WiFi.disconnect(true);
   WiFi.softAP(ssid);
-  debug_println("Creating AP with ssid: ");
-  debug_println(ssid);
-  debug_print("Soft-AP IP address = ");
+  debug_printf("Created network '%s'\n", ssid);
+  debug_print("IP: ");
   debug_println(WiFi.softAPIP());
   server->begin();
+  debug_println("Server ready");
 }
 
 DynamicWifi::~DynamicWifi() {
   delete server;
   WiFi.softAPdisconnect(true);
   debug_println("Wifi off");
-}
-
-String httpProtocolNotSupported() {
-  String response = String("HTTP/1.1 505");
 }
 
 bool DynamicWifi::tryConfigure() {
@@ -78,19 +75,7 @@ bool DynamicWifi::tryConfigure() {
     client.stop();
     debug_println("\nClient disconnected");
   }
-  //Connect to wifi
-  if (ssid.length() > 0 && password.length() > 0) {
-    char ssidC[ssid.length() + 1];
-    char passwordC[password.length() + 1];
-    ssidC[ssid.length() + 1] = '\0';
-    passwordC[password.length() + 1] = '\0';
-    ssid.toCharArray(ssidC, ssid.length() + 1);
-    ssid.toCharArray(passwordC, password.length() + 1);
-    WiFi.begin(ssidC, passwordC);
-    ssid = "";
-    password = "";
-  }
-  return WiFi.waitForConnectResult() == WL_CONNECTED;
+  return WiFi.status() == WL_CONNECTED;
 }
 
 void DynamicWifi::handleGet(WiFiClient client) {
@@ -142,14 +127,15 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
       debug_println(keyVal);
     }
   } while(i < body.length());
-  client.print("HTTP/1.1 ");
-  if (ssid.length() <= 0 || password.length() <= 0) {
-    status(client, 400);
-  } else {
+  WiFi.begin(ssid.c_str(), password.c_str());
+  if (WiFi.waitForConnectResult() == WL_CONNECTED) {
     status(client, 200);
-    client.print("Network '");
+    client.print("Connected to '");
     client.print(ssid);
-    client.print("' saved!");
+    client.write('\'');
+  } else {
+    status(client, 400);
+    client.print("Could not connect to '");
   }
 }
 
