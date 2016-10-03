@@ -7,15 +7,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Booting...");
 
-  // Test if previous wifi is awailable
-  if (WiFi.waitForConnectResult() == WL_CONNECTED) {
-    Serial.printf("Connected to %s\n", WiFi.SSID().c_str());
-    return;
-  }
-
-  WiFi.setAutoConnect(true);
-  WiFi.setAutoReconnect(true);
-
   char uniqueSsid[15] = {'\0'};
   generateUniqueSsid(uniqueSsid);
 
@@ -23,6 +14,7 @@ void setup() {
   Serial.println(uniqueSsid);
   // Initiate config object
   DynamicWifi config(uniqueSsid);
+
   unsigned long configStart = millis();
   // Try config until success or timeout
   while(!config.tryConfigure()) {
@@ -31,6 +23,7 @@ void setup() {
       return;
     }
   }
+  Serial.printf("Connected to WiFi '%s'\n", WiFi.SSID().c_str());
 }
 
 void loop() {
@@ -44,5 +37,6 @@ void generateUniqueSsid(char* result) {
   apSsid.concat(String(macAddr[3], HEX));
   apSsid.concat(String(macAddr[4], HEX));
   apSsid.concat(String(macAddr[5], HEX));
+  apSsid.toUpperCase();
   apSsid.toCharArray(result, 15);
 }
