@@ -10,10 +10,12 @@
   #define debug_print(...)    Serial.print(__VA_ARGS__)
   #define debug_println(...)  Serial.println(__VA_ARGS__)
   #define debug_write(...)    Serial.write(__VA_ARGS__)
+  #define debug_printf(...)    Serial.printf(__VA_ARGS__)
 #else
   #define debug_print(...)
   #define debug_println(...)
   #define debug_write(...)
+  #define debug_printf(...)
 #endif
 
 class DynamicWifi {
