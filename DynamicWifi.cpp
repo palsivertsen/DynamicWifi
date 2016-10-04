@@ -4,23 +4,23 @@ DynamicWifi::DynamicWifi(char* ssid)
     :server(new WiFiServer(80)) {
   WiFi.disconnect(true);
   WiFi.softAP(ssid);
-  debug_printf("Created network '%s'\n", ssid);
-  debug_print("IP: ");
-  debug_println(WiFi.softAPIP());
+  debug_dw_printf("Created network '%s'\n", ssid);
+  debug_dw_print("IP: ");
+  debug_dw_println(WiFi.softAPIP());
   server->begin();
-  debug_println("Server ready");
+  debug_dw_println("Server ready");
 }
 
 DynamicWifi::~DynamicWifi() {
   delete server;
   WiFi.softAPdisconnect(true);
-  debug_println("Wifi off");
+  debug_dw_println("Wifi off");
 }
 
 bool DynamicWifi::tryConfigure() {
   WiFiClient client = server->available();
   if (client) {
-    debug_println("Client connected");
+    debug_dw_println("Client connected");
     while (client.connected()) {
       if (client.available()) {
         String verb = client.readStringUntil(' ');
@@ -29,23 +29,23 @@ bool DynamicWifi::tryConfigure() {
         client.read();
         {
           String header;
-          debug_println("Headers:");
+          debug_dw_println("Headers:");
           do {
             header = client.readStringUntil('\r');
             client.read();
-            debug_println(header);
+            debug_dw_println(header);
           } while (header.length() > 0);
         }
         String body = client.readString();
 
-        debug_print("Verb: ");
-        debug_println(verb);
-        debug_print("Path: ");
-        debug_println(path);
-        debug_print("Protocol: ");
-        debug_println(protocol);
-        debug_print("Body: ");
-        debug_println(body);
+        debug_dw_print("Verb: ");
+        debug_dw_println(verb);
+        debug_dw_print("Path: ");
+        debug_dw_println(path);
+        debug_dw_print("Protocol: ");
+        debug_dw_println(protocol);
+        debug_dw_print("Body: ");
+        debug_dw_println(body);
 
         if (protocol != "HTTP/1.1") {
           status(client, 505); // HTTP Version Not Supported
@@ -55,9 +55,9 @@ bool DynamicWifi::tryConfigure() {
         // Only accept requests on root path
         if (path != "/") {
           status(client, 404);
-          debug_print("Path '");
-          debug_print(path);
-          debug_println("' not allowed'");
+          debug_dw_print("Path '");
+          debug_dw_print(path);
+          debug_dw_println("' not allowed'");
           break;
         }
 
@@ -73,7 +73,7 @@ bool DynamicWifi::tryConfigure() {
     }
     client.flush();
     client.stop();
-    debug_println("\nClient disconnected");
+    debug_dw_println("\nClient disconnected");
   }
   return WiFi.status() == WL_CONNECTED;
 }
@@ -110,21 +110,21 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
     if (indexOfAmp > 0) {
       keyVal = body.substring(i, indexOfAmp);
       i = indexOfAmp + 1;
-      debug_println("PreKey");
+      debug_dw_println("PreKey");
     } else {
       keyVal = body.substring(i, body.length());
-      debug_println("PostKey");
+      debug_dw_println("PostKey");
       i = body.length();
     }
-    debug_print("KeyVal: ");
-    debug_println(keyVal);
+    debug_dw_print("KeyVal: ");
+    debug_dw_println(keyVal);
     if (keyVal.startsWith("ssid=")) {
       ssid = keyVal.substring(5, keyVal.length());
     } else if (keyVal.startsWith("password=")) {
       password = keyVal.substring(9, keyVal.length());
     } else {
-      debug_print("Ignoring ");
-      debug_println(keyVal);
+      debug_dw_print("Ignoring ");
+      debug_dw_println(keyVal);
     }
   } while(i < body.length());
   WiFi.begin(ssid.c_str(), password.c_str());

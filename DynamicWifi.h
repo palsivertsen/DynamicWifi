@@ -4,18 +4,18 @@
 #include "Arduino.h"
 #include <ESP8266WiFi.h>
 
-// #define dynamic_wifi_debug
+// #define debug_dynamic_wifi
 
-#ifdef dynamic_wifi_debug
-  #define debug_print(...)    Serial.print(__VA_ARGS__)
-  #define debug_println(...)  Serial.println(__VA_ARGS__)
-  #define debug_write(...)    Serial.write(__VA_ARGS__)
-  #define debug_printf(...)    Serial.printf(__VA_ARGS__)
+#ifdef debug_dynamic_wifi
+  #define debug_dw_print(...)    Serial.print(__VA_ARGS__)
+  #define debug_dw_println(...)  Serial.println(__VA_ARGS__)
+  #define debug_dw_write(...)    Serial.write(__VA_ARGS__)
+  #define debug_dw_printf(...)    Serial.printf(__VA_ARGS__)
 #else
-  #define debug_print(...)
-  #define debug_println(...)
-  #define debug_write(...)
-  #define debug_printf(...)
+  #define debug_dw_print(...)
+  #define debug_dw_println(...)
+  #define debug_dw_write(...)
+  #define debug_dw_printf(...)
 #endif
 
 class DynamicWifi {
