@@ -1,5 +1,8 @@
 # Changelog
 
+# v2.0.3
+- Added support for spaces in ssid and password
+
 # v2.0.2
 - Changes to debug logic
 
