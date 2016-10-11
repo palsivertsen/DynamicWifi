@@ -137,6 +137,10 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
   } else {
     status(client, 400);
     client.print("Could not connect to '");
+    client.print(ssid);
+    client.print("'. (");
+    client.print(WiFi.status());
+    client.print(")");
   }
 }
 
