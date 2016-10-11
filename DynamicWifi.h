@@ -30,6 +30,7 @@ private:
   String ssid;
   String password;
   WiFiServer* server;
+  void decodeFields();
 };
 
 #endif
