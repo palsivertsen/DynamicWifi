@@ -127,6 +127,7 @@ void DynamicWifi::handlePost(WiFiClient client, String body) {
       debug_dw_println(keyVal);
     }
   } while(i < body.length());
+  decodeFields();
   WiFi.begin(ssid.c_str(), password.c_str());
   if (WiFi.waitForConnectResult() == WL_CONNECTED) {
     status(client, 200);
@@ -143,4 +144,9 @@ void DynamicWifi::status(WiFiClient client, short status) {
   client.print("HTTP/1.1 ");
   client.print(status);
   client.print(" \r\n\r\n");
+}
+
+void DynamicWifi::decodeFields() {
+  ssid.replace('+', ' ');
+  password.replace('+', ' ');
 }
