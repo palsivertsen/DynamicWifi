@@ -1,6 +1,6 @@
 #include "DynamicWifi.h"
 
-DynamicWifi::DynamicWifi(char* ssid)
+DynamicWifi::DynamicWifi(const char* ssid)
     :server(new WiFiServer(80)) {
   WiFi.disconnect(true);
   WiFi.softAP(ssid);
