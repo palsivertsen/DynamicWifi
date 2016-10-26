@@ -21,9 +21,6 @@
 class DynamicWifi {
 public:
   DynamicWifi(const char*);
-  DynamicWifi(char* ssid) {
-    DynamicWifi((const char*) ssid);
-  }
   ~DynamicWifi();
   bool tryConfigure();
 private:
