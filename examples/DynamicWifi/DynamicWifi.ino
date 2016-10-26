@@ -1,19 +1,17 @@
-#include "DynamicWifi.h"
-
-void generateUniqueSsid(char*);
+#include <DynamicWifi.h>
 
 void setup() {
   // Setup
   Serial.begin(115200);
   Serial.println("Booting...");
 
-  char uniqueSsid[15] = {'\0'};
-  generateUniqueSsid(uniqueSsid);
+  char ssid[15] = {'\0'};
+  sprintf(ssid, "ESP8266_%06X", ESP.getChipId());
 
   Serial.print("Setting up AP with SSID: ");
-  Serial.println(uniqueSsid);
+  Serial.println(ssid);
   // Initiate config object
-  DynamicWifi config(uniqueSsid);
+  DynamicWifi config(ssid);
 
   unsigned long configStart = millis();
   // Try config until success or timeout
@@ -27,16 +25,4 @@ void setup() {
 }
 
 void loop() {
-}
-
-// Generates SSID nased on mac address
-void generateUniqueSsid(char* result) {
-  uint8_t macAddr[6];
-  WiFi.softAPmacAddress(macAddr);
-  String apSsid = String("ESP8266_");
-  apSsid.concat(String(macAddr[3], HEX));
-  apSsid.concat(String(macAddr[4], HEX));
-  apSsid.concat(String(macAddr[5], HEX));
-  apSsid.toUpperCase();
-  apSsid.toCharArray(result, 15);
 }

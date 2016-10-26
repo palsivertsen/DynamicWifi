@@ -20,7 +20,7 @@
 
 class DynamicWifi {
 public:
-  DynamicWifi(char*);
+  DynamicWifi(const char*);
   ~DynamicWifi();
   bool tryConfigure();
 private:
